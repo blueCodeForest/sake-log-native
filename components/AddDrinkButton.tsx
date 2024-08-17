@@ -2,7 +2,7 @@ import { FAB } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { onAddDrink } from '@/features/onAddDrink';
 import { Dispatch, SetStateAction } from 'react';
-import { nextDrinkIdSelector } from '@/stores/drinksState';
+import { nextDrinkIdSelector } from '@/stores/selectors';
 import { useRecoilValue } from 'recoil';
 import { SharedValue } from 'react-native-reanimated';
 

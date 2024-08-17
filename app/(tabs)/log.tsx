@@ -1,7 +1,7 @@
 import { screenDimentions } from '@/constants/dimentions';
 import { useAppTheme } from '@/hooks';
 import { StyleSheet, View, Text, SafeAreaView } from 'react-native';
-import { DrinkLogTable } from '@/components/DrinkLogTable';
+import { DrinkingLogTable } from '@/components/DrinkingLogTable';
 
 export default function TabTwoScreen() {
   const theme = useAppTheme();
@@ -9,7 +9,7 @@ export default function TabTwoScreen() {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }]}>
       <View style={styles.container}>
-        <DrinkLogTable />
+        <DrinkingLogTable />
       </View>
     </SafeAreaView>
   );

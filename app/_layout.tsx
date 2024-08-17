@@ -19,7 +19,7 @@ import { RecoilRoot } from 'recoil';
 import { adaptNavigationTheme, PaperProvider, useTheme } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { addInitialData, initDatabase } from '@/utils/database';
+import { addInitialData, initDatabase, resetDatabase, showDatabase } from '@/utils/repositories';
 
 // const Stack = createStackNavigator();
 
@@ -58,7 +58,9 @@ export default function RootLayout() {
     const initializeDatabase = async () => {
       try {
         await initDatabase();
-        await addInitialData();
+        // await addInitialData();
+        // await resetDatabase();
+        // await showDatabase();
       } catch (error) {
         console.log(error);
       }

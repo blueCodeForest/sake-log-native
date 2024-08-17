@@ -1,9 +1,9 @@
-import { Drink } from '@/domains/types';
+import { Drink } from '@/entities';
 import { StyleSheet, View, Animated } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { ConfirmDialog } from './ComfirmDialog';
 import { useSetRecoilState } from 'recoil';
-import { totalAlcoholIntakeState } from '@/stores';
+import { totalAlcoholIntakeSelector } from '@/stores/selectors';
 import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { Icon, TouchableRipple, Text, Card, Portal } from 'react-native-paper';
 import { useAppTheme } from '@/hooks';
@@ -18,13 +18,11 @@ export function DrinkCard(props: DrinkCardProps) {
   const theme = useAppTheme();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [drinkCount, setDrinkCount] = useState(0);
-  const setTotalAlcoholIntake = useSetRecoilState(totalAlcoholIntakeState);
-  const alcoholAmount = props.drink.amount! * props.drink.alcoholDegree! * 0.01;
+  const alcoholAmount = Math.round(props.drink.size.amount! * props.drink.alcoholDegree! * 0.01);
   const swipeableRef = useRef<Swipeable>(null);
 
   const onDrink = () => {
     setDrinkCount(drinkCount + 1);
-    setTotalAlcoholIntake((prevTotal: number) => prevTotal + alcoholAmount);
   };
 
   const onShowDialog = () => {
@@ -72,7 +70,7 @@ export function DrinkCard(props: DrinkCardProps) {
             <Card style={styles.card}>
               <View>
                 <Text>{props.drink.name}</Text>
-                <Text>({props.drink.size})</Text>
+                <Text>({props.drink.size.name})</Text>
                 <Text>{alcoholAmount}g</Text>
               </View>
               <View>

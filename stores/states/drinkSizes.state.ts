@@ -3,12 +3,12 @@ import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 
 const { persistAtom } = recoilPersist({
-  key: 'totalAlcoholIntake',
+  key: 'drinks',
   storage: AsyncStorage,
 });
 
-export const totalAlcoholIntakeState = atom({
-  key: 'totalAlcoholIntake',
-  default: 0,
+export const drinkSizesState = atom({
+  key: 'drinkSizesState',
+  default: [],
   effects_UNSTABLE: [persistAtom],
 });

@@ -2,13 +2,14 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { HelperText, Text, TextInput } from 'react-native-paper';
 import { SharedValue } from 'react-native-reanimated';
 
-import { Drink } from '@/domains/types';
+import { Drink } from '@/entities';
 import { useRecoilState } from 'recoil';
-import { drinksState } from '@/stores';
+import { drinksState } from '@/stores/states';
 import { useEffect, useState } from 'react';
 import { useAppTheme } from '@/hooks';
 import { BottomSheet } from './BottomSheet';
 import { BottomSheetSpacer } from './BottomSheetSpacer';
+import { useAddDrink, useUpdateDrink } from '@/stores/callbacks';
 
 type DrinkBottomSheetProps = {
   isOpen: SharedValue<boolean>;
@@ -24,6 +25,8 @@ export function DrinkBottomSheet(props: DrinkBottomSheetProps) {
   //   : {};
   const [editedDrink, setEditedDrink] = useState<Drink | null>(null);
   const [errors, setErrors] = useState({ name: false, alcoholDegree: false });
+  const addDrink = useAddDrink();
+  const updateDrink = useUpdateDrink();
 
   const validateField = (field: 'name' | 'alcoholDegree') => {
     if (editedDrink) {
@@ -55,12 +58,14 @@ export function DrinkBottomSheet(props: DrinkBottomSheetProps) {
   }, [props.drinkId]);
   // });
 
-  const handleSave = (drinkId: number) => {
+  const handleSave = async (drinkId: number) => {
     if (editedDrink && editedDrink.alcoholDegree && editedDrink.name) {
       if (drinks.find((drink: Drink) => drink.id === drinkId)) {
-        setDrinks(drinks.map((drink: Drink) => (drink.id === drinkId ? editedDrink : drink)));
+        // setDrinks(drinks.map((drink: Drink) => (drink.id === drinkId ? editedDrink : drink)));
+        await updateDrink(editedDrink);
       } else {
-        setDrinks([...drinks, editedDrink]);
+        await addDrink(editedDrink);
+        // setDrinks([...drinks, editedDrink]);
       }
       props.toggleSheet();
     } else {

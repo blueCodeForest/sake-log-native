@@ -1,4 +1,4 @@
-import { totalAlcoholIntakeState } from '@/stores';
+import { totalAlcoholIntakeSelector } from '@/stores/selectors';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Card } from 'react-native-paper';
 import { useRecoilValue } from 'recoil';
@@ -14,7 +14,7 @@ export function TotalAlcoholIntakeArea() {
             <Text>アルコール摂取量</Text>
           </View>
           <View>
-            <Text>{useRecoilValue<number>(totalAlcoholIntakeState)}</Text>
+            <Text>{useRecoilValue<number>(totalAlcoholIntakeSelector)}</Text>
           </View>
         </View>
       </Card>

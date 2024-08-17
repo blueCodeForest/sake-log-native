@@ -1,23 +1,33 @@
 import { DrinkCard } from '@/components/DrinkCard';
 import { TotalAlcoholIntakeArea } from '@/components/TotalAlcoholIntakeArea';
-import { Drink } from '@/domains/types';
 import { StyleSheet, SafeAreaView, FlatList, View } from 'react-native';
-import { useRecoilValue } from 'recoil';
-import { drinksState } from '@/stores';
+import { useRecoilState } from 'recoil';
+import { drinksState } from '@/stores/states';
 import { ResetButton } from '@/components/dev/resetButton';
 import { DrinkBottomSheet } from '@/components/DrinkBottomSheet';
 import { useSharedValue } from 'react-native-reanimated';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { screenDimentions } from '@/constants/dimentions';
-import { Divider, Surface } from 'react-native-paper';
 import { useAppTheme } from '@/hooks';
 import { AddDrinkButton } from '@/components/AddDrinkButton';
+import { retrieveDrinks } from '@/utils/repositories';
+import { Drink } from '@/entities';
 
 export default function TabOneScreen() {
   const theme = useAppTheme();
   const isOpen = useSharedValue(false);
-  const drinks = useRecoilValue(drinksState);
+  const [drinks, setDrinksState] = useRecoilState<Drink[]>(drinksState);
   const [selectedDrinkId, setSelectedDrinkId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchDrinks = async () => {
+      if (drinks.length === 0) {
+        const drinksData = await retrieveDrinks();
+        setDrinksState(drinksData || []);
+      }
+    };
+    fetchDrinks();
+  }, []);
 
   const toggleSheet = () => {
     isOpen.value = !isOpen.value;

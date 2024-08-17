@@ -1,5 +1,5 @@
-import { Drink } from '@/domains/types';
-import { drinksState } from '@/stores';
+import { Drink } from '@/entities';
+import { drinksState } from '@/stores/states';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 export function useResetDb() {

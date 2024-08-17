@@ -1,3 +1,3 @@
-export { Drinks } from './Drinks';
-export { DrinkingLogs } from './DrinkingLogs';
-export { DrinkSizes } from './DrinkSizes';
+export { Drink } from './Drink';
+export { DrinkingLog } from './DrinkingLog';
+export { DrinkSize } from './DrinkSize';

@@ -1,7 +1,8 @@
 import { Button, Dialog, Text } from 'react-native-paper';
-import { Drink } from '@/domains/types';
+import { Drink } from '@/entities';
 import { onRemoveDrink } from '@/features';
-import React from 'react';
+import { useRef } from 'react';
+import { useDeleteDrink } from '@/stores/callbacks/deleteDrink.callback';
 
 type ComfirmDialogProps = {
   visible: boolean;
@@ -9,21 +10,23 @@ type ComfirmDialogProps = {
   drink: Drink;
 };
 export function ConfirmDialog(props: ComfirmDialogProps) {
-  const removeDrink = onRemoveDrink(props.drink.id);
+  // const removeDrink = onRemoveDrink(props.drink.id);
+  const deleteDrink = useDeleteDrink();
 
-  const cancelRef = React.useRef(null);
+  const cancelRef = useRef(null);
   return (
     <Dialog visible={props.visible} onDismiss={props.onDismiss}>
       <Dialog.Title>確認</Dialog.Title>
       <Dialog.Content>
         <Text>
-          {props.drink.name}({props.drink.size})を削除してもよろしいですか？
+          {props.drink.name}({props.drink.size.name})を削除してもよろしいですか？
         </Text>
       </Dialog.Content>
       <Dialog.Actions>
         <Button
           onPress={() => {
-            removeDrink();
+            // removeDrink();
+            deleteDrink(props.drink.id);
             props.onDismiss();
           }}
         >

@@ -13,13 +13,14 @@ import Animated, {
   useAnimatedReaction,
 } from 'react-native-reanimated';
 
-import { Drink } from '@/domains/types';
+import { Drink } from '@/entities';
 import { useRecoilState } from 'recoil';
-import { drinksState } from '@/stores';
+import { drinksState } from '@/stores/states';
 import { screenDimentions } from '@/constants/dimentions';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import { useEffect, useState } from 'react';
 import { useAppTheme } from '@/hooks';
+import { useAddDrink } from '@/stores/callbacks';
 
 type AddDrinkBottomSheetProps = {
   // visible: boolean;
@@ -33,21 +34,22 @@ type AddDrinkBottomSheetProps = {
 
 export function DrinkBottomSheet({
   isOpen,
-  duration = 500,
+  // duration = 500,
   toggleSheet,
   onAddDrink,
 }: AddDrinkBottomSheetProps) {
   const theme = useAppTheme();
   const height = useSharedValue(0);
   const translateY = useSharedValue(height.value);
-  const progress = useDerivedValue(() => withTiming(isOpen.value ? 0 : 1, { duration }));
-  const addDrink = onAddDrink();
+  // const progress = useDerivedValue(() => withTiming(isOpen.value ? 0 : 1, { duration }));
+  // const addDrink = onAddDrink();
+  const addDrink = useAddDrink()
   const [name, setName] = useState('');
   const [size, setSize] = useState('');
   const [amount, setAmount] = useState('');
   const [alcoholDegree, setAlcoholDegree] = useState('');
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const newDrink: Drink = {
       id: Date.now(),
       name,
@@ -56,7 +58,7 @@ export function DrinkBottomSheet({
       alcoholDegree: Number(alcoholDegree),
       memo: '',
     };
-    addDrink(newDrink);
+    await addDrink(newDrink);
     onClose();
     resetForm();
   };
@@ -100,14 +102,14 @@ export function DrinkBottomSheet({
     },
   });
 
-  const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-  }));
+  // const sheetStyle = useAnimatedStyle(() => ({
+  //   transform: [{ translateY: translateY.value }],
+  // }));
 
-  const backdropStyle = useAnimatedStyle(() => ({
-    opacity: 1 - progress.value,
-    zIndex: isOpen.value ? 1 : withDelay(duration, withTiming(-1, { duration: 0 })),
-  }));
+  // const backdropStyle = useAnimatedStyle(() => ({
+  //   opacity: 1 - progress.value,
+  //   zIndex: isOpen.value ? 1 : withDelay(duration, withTiming(-1, { duration: 0 })),
+  // }));
 
   return (
     // <Modal isOpen={props.visible} onClose={props.onHideModal} style={styles.modalStyle}>

@@ -1,6 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 import { DrinkCard } from './DrinkCard';
-import { Drink } from '@/domains/types';
+import { Drink } from '@/entities';
 
 type AlcoholCardsAreaProps = {
   onAddAlcohol: (amount: number) => void;
