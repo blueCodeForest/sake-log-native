@@ -1,38 +1,34 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { HelperText, Text, TextInput } from 'react-native-paper';
 import { SharedValue } from 'react-native-reanimated';
+import { Picker } from '@react-native-picker/picker';
 
-import { Drink } from '@/entities';
-import { useRecoilState } from 'recoil';
-import { drinksState } from '@/stores/states';
+import { Drink, InsertDrink } from '@/domains/drink';
 import { useEffect, useState } from 'react';
-import { useAppTheme } from '@/hooks';
+import { useAppTheme, useDrinkSizesData } from '@/hooks';
 import { BottomSheet } from './BottomSheet';
 import { BottomSheetSpacer } from './BottomSheetSpacer';
-import { useAddDrink, useUpdateDrink } from '@/stores/callbacks';
+import { addDrink, updateDrink } from '@/features';
+import { StyledText } from './styled';
 
 type DrinkBottomSheetProps = {
   isOpen: SharedValue<boolean>;
   toggleSheet: () => void;
-  drinkId: number;
+  drink: Drink | null;
 };
 
 export function DrinkBottomSheet(props: DrinkBottomSheetProps) {
   const theme = useAppTheme();
-  const [drinks, setDrinks] = useRecoilState(drinksState);
-  // const drink: Drink = props.drinkId
-  //   ? drinks.find((drink: Drink) => drink.id === props.drinkId)
-  //   : {};
-  const [editedDrink, setEditedDrink] = useState<Drink | null>(null);
+  const drinkSizes = useDrinkSizesData();
+  const [editedDrink, setEditedDrink] = useState<Drink | InsertDrink | null>(null);
+  const [tempAlcoholDegree, setTempAlcoholDegree] = useState<string>('');
   const [errors, setErrors] = useState({ name: false, alcoholDegree: false });
-  const addDrink = useAddDrink();
-  const updateDrink = useUpdateDrink();
 
   const validateField = (field: 'name' | 'alcoholDegree') => {
     if (editedDrink) {
       if (field === 'name' && !editedDrink.name) {
         setErrors((prev) => ({ ...prev, name: true }));
-      } else if (field === 'alcoholDegree' && editedDrink.alcoholDegree === null) {
+      } else if (field === 'alcoholDegree' && tempAlcoholDegree === '') {
         setErrors((prev) => ({ ...prev, alcoholDegree: true }));
       } else {
         setErrors((prev) => ({ ...prev, [field]: false }));
@@ -41,33 +37,41 @@ export function DrinkBottomSheet(props: DrinkBottomSheetProps) {
   };
 
   useEffect(() => {
-    const drink = drinks.find((drink: Drink) => drink.id === props.drinkId);
-    if (drink) {
-      setEditedDrink({ ...drink });
+    if (props.drink) {
+      setEditedDrink({ ...props.drink });
+      setTempAlcoholDegree(props.drink.alcoholDegree?.toString() ?? '');
     } else {
       setEditedDrink({
-        id: props.drinkId,
         name: '',
-        size: '',
-        amount: 0,
+        sizeId: 2,
         alcoholDegree: 0,
         memo: '',
       });
+      setTempAlcoholDegree('');
     }
-    // }, [props.drinkId, drinks]);
-  }, [props.drinkId]);
-  // });
+    setErrors({ name: false, alcoholDegree: false });
+  }, [props.drink]);
 
-  const handleSave = async (drinkId: number) => {
-    if (editedDrink && editedDrink.alcoholDegree && editedDrink.name) {
-      if (drinks.find((drink: Drink) => drink.id === drinkId)) {
-        // setDrinks(drinks.map((drink: Drink) => (drink.id === drinkId ? editedDrink : drink)));
-        await updateDrink(editedDrink);
+  const handleSave = async () => {
+    if (editedDrink && tempAlcoholDegree && editedDrink.name) {
+      const updatedDrink = {
+        ...editedDrink,
+        alcoholDegree: parseInt(tempAlcoholDegree),
+      };
+      if (props.drink) {
+        await updateDrink(updatedDrink as Drink);
       } else {
-        await addDrink(editedDrink);
-        // setDrinks([...drinks, editedDrink]);
+        await addDrink(updatedDrink as InsertDrink);
       }
       props.toggleSheet();
+      // 入力内容をリセット
+      setEditedDrink({
+        name: '',
+        sizeId: 2,
+        alcoholDegree: 0,
+        memo: '',
+      });
+      setTempAlcoholDegree('');
     } else {
       validateField('name');
       validateField('alcoholDegree');
@@ -75,15 +79,14 @@ export function DrinkBottomSheet(props: DrinkBottomSheetProps) {
   };
 
   return (
-    // <Modal isOpen={props.visible} onClose={props.onHideModal} style={styles.modalStyle}>
-    // <RBSheet ref={props.ref}>
-    // <BottomSheet isOpen={isOpen} toggleSheet={toggleSheet}>
     <BottomSheet isOpen={props.isOpen} toggleSheet={props.toggleSheet}>
-      <Text variant="titleMedium">ドリンク編集</Text>
+      <StyledText variant="titleMedium" className="mb-4">
+        ドリンク編集
+      </StyledText>
       {editedDrink && (
         <View style={styles.form}>
           <TextInput
-            label="名前"
+            label="ドリンク名"
             value={editedDrink.name}
             onChangeText={(text) => setEditedDrink({ ...editedDrink, name: text })}
             onBlur={() => validateField('name')}
@@ -93,25 +96,9 @@ export function DrinkBottomSheet(props: DrinkBottomSheetProps) {
             ドリンク名を入力してください
           </HelperText>
           <TextInput
-            label="サイズ"
-            value={editedDrink.size}
-            onChangeText={(text) => setEditedDrink({ ...editedDrink, size: text })}
-          />
-          <TextInput
-            label="量 (ml)"
-            value={editedDrink.amount?.toString() ?? ''}
-            onChangeText={(text) => setEditedDrink({ ...editedDrink, amount: parseFloat(text) })}
-            keyboardType="numeric"
-          />
-          <TextInput
             label="アルコール度数 (%)"
-            value={editedDrink.alcoholDegree?.toString() ?? ''}
-            onChangeText={(text) =>
-              setEditedDrink({
-                ...editedDrink,
-                alcoholDegree: text === '' ? null : parseFloat(text) || 0,
-              })
-            }
+            value={tempAlcoholDegree}
+            onChangeText={(text) => setTempAlcoholDegree(text)}
             onBlur={() => validateField('alcoholDegree')}
             error={errors.alcoholDegree}
             keyboardType="numeric"
@@ -119,15 +106,31 @@ export function DrinkBottomSheet(props: DrinkBottomSheetProps) {
           <HelperText type="error" visible={errors.alcoholDegree}>
             アルコール度数を入力してください
           </HelperText>
+          <Picker
+            selectedValue={editedDrink.sizeId}
+            onValueChange={(itemValue) => setEditedDrink({ ...editedDrink, sizeId: itemValue })}
+            // style={{ backgroundColor: 'gray', marginBottom: 30 }}
+            style={{ marginBottom: 25 }}
+            itemStyle={{ color: theme.colors.onSurface }}
+          >
+            {drinkSizes.map((size) => (
+              <Picker.Item
+                key={size.id}
+                label={`${size.name} : ${size.amount}ml`}
+                value={size.id}
+              />
+            ))}
+          </Picker>
           <TextInput
             label="メモ"
-            value={editedDrink.memo}
+            value={editedDrink.memo ?? ''}
             onChangeText={(text) => setEditedDrink({ ...editedDrink, memo: text })}
             multiline
+            style={{ marginBottom: 20 }}
           />
           <TouchableOpacity
             style={[styles.saveButton, { backgroundColor: theme.colors.primary }]}
-            onPress={() => handleSave(editedDrink.id)}
+            onPress={() => handleSave()}
           >
             <Text style={{ color: theme.colors.onPrimary }}>保存</Text>
           </TouchableOpacity>

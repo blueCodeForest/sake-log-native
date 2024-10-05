@@ -9,7 +9,6 @@ import {
   withDelay,
   SharedValue,
 } from 'react-native-reanimated';
-import { useKeyboardHeight } from './useKeyboardHeight';
 
 export function useBottomSheet(isOpen: SharedValue<boolean>, toggleSheet: () => void) {
   const height = useSharedValue(0);
@@ -17,8 +16,6 @@ export function useBottomSheet(isOpen: SharedValue<boolean>, toggleSheet: () => 
   const duration = 500;
 
   const progress = useDerivedValue(() => withTiming(isOpen.value ? 0 : 1, { duration }));
-
-  const keyboardHeight = useKeyboardHeight();
 
   useAnimatedReaction(
     () => isOpen.value,

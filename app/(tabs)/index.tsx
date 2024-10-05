@@ -1,56 +1,75 @@
 import { DrinkCard } from '@/components/DrinkCard';
 import { TotalAlcoholIntakeArea } from '@/components/TotalAlcoholIntakeArea';
 import { StyleSheet, SafeAreaView, FlatList, View } from 'react-native';
-import { useRecoilState } from 'recoil';
-import { drinksState } from '@/stores/states';
-import { ResetButton } from '@/components/dev/resetButton';
 import { DrinkBottomSheet } from '@/components/DrinkBottomSheet';
 import { useSharedValue } from 'react-native-reanimated';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { screenDimentions } from '@/constants/dimentions';
-import { useAppTheme } from '@/hooks';
-import { AddDrinkButton } from '@/components/AddDrinkButton';
-import { retrieveDrinks } from '@/utils/repositories';
-import { Drink } from '@/entities';
+import { useAppTheme, useInitializeDrinks, useSyncOrderedDrinks } from '@/hooks';
+import { Drink } from '@/domains/drink';
+import { StyledView } from '@/components/styled';
+import { AddDrinkCard } from '@/components/AddDrinkCard';
+import DraggableFlatList from 'react-native-draggable-flatlist';
+import { orderedDrinksState } from '@/stores/states';
+import { useRecoilState } from 'recoil';
+import { useEffect } from 'react';
 
 export default function TabOneScreen() {
   const theme = useAppTheme();
+  useInitializeDrinks();
+  useSyncOrderedDrinks();
   const isOpen = useSharedValue(false);
-  const [drinks, setDrinksState] = useRecoilState<Drink[]>(drinksState);
-  const [selectedDrinkId, setSelectedDrinkId] = useState<number | null>(null);
-
-  useEffect(() => {
-    const fetchDrinks = async () => {
-      if (drinks.length === 0) {
-        const drinksData = await retrieveDrinks();
-        setDrinksState(drinksData || []);
-      }
-    };
-    fetchDrinks();
-  }, []);
+  const [selectedDrink, setSelectedDrink] = useState<Drink | null | undefined>(undefined);
+  const [orderedDrinks, setOrderedDrinks] = useRecoilState(orderedDrinksState);
 
   const toggleSheet = () => {
     isOpen.value = !isOpen.value;
   };
 
+  useEffect(() => {
+    console.log('Current orderedDrinksState:', orderedDrinks);
+  }, [orderedDrinks]);
+
+  const handleDragEnd = ({ data }: { data: Drink[] }) => {
+    console.log('Drag ended, data:', data);
+    try {
+      setOrderedDrinks(data);
+    } catch (error) {
+      console.error('Error in handleDragEnd:', error);
+    }
+  };
+
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.container}>
-        <FlatList
-          data={drinks}
-          ListHeaderComponent={() => <TotalAlcoholIntakeArea />}
-          renderItem={({ item }) => (
-            <DrinkCard drink={item} toggleSheet={toggleSheet} onSelect={setSelectedDrinkId} />
+      <StyledView style={styles.container}>
+        <DraggableFlatList
+          data={orderedDrinks}
+          onDragEnd={handleDragEnd}
+          ListHeaderComponent={() => (
+            <>
+              <TotalAlcoholIntakeArea />
+              <AddDrinkCard toggleSheet={toggleSheet} onPress={setSelectedDrink} />
+            </>
+          )}
+          renderItem={({ item, drag, isActive }) => (
+            <DrinkCard
+              drink={item}
+              toggleSheet={toggleSheet}
+              onSelect={setSelectedDrink}
+              onLongPress={drag}
+              isActive={isActive}
+            />
           )}
           ItemSeparatorComponent={() => <View style={{ height: 3 }} />}
           keyExtractor={(item) => item.id.toString()}
           style={styles.list}
         />
-      </View>
-      <ResetButton />
-      <AddDrinkButton toggleSheet={toggleSheet} onSelect={setSelectedDrinkId} />
-      {selectedDrinkId !== null && (
-        <DrinkBottomSheet drinkId={selectedDrinkId} isOpen={isOpen} toggleSheet={toggleSheet} />
+      </StyledView>
+      {/* <ResetButton /> */}
+      {/* <AddDrinkButton toggleSheet={toggleSheet} onPress={setSelectedDrink} /> */}
+      {selectedDrink !== undefined && (
+        // {selectedDrink && (
+        <DrinkBottomSheet drink={selectedDrink} isOpen={isOpen} toggleSheet={toggleSheet} />
       )}
     </SafeAreaView>
   );
@@ -62,11 +81,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    flex: 1,
-    alignItems: 'stretch',
-    width: screenDimentions.width * 0.9,
-    marginTop: 20,
+    // flex: 1,
+    // alignItems: 'stretch',
+    width: screenDimentions.width * 0.95,
     maxWidth: 600,
+    marginTop: 10,
   },
   list: {},
 });

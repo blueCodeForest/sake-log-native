@@ -1,7 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { useTheme, Text, Icon } from 'react-native-paper';
-import { Entypo, Foundation } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const theme = useTheme();
@@ -11,30 +10,35 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
-        tabBarLabelStyle: {
-          fontSize: 12,
-        },
         tabBarStyle: {
           backgroundColor: theme.colors.surface,
+          height: 75,
         },
+        tabBarShowLabel: false,
+        headerStyle: { backgroundColor: theme.colors.surface, height: 100 },
+        headerTintColor: theme.colors.onSurface,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: '酒レコ',
           tabBarIcon: ({ color, size }) => (
             <Icon source="glass-cocktail" color={color} size={size} />
           ),
-          tabBarLabel: ({ focused, color }) => <Text style={{ color }}>ホーム</Text>,
+          // tabBarLabel: ({ focused, color }) => (
+          //   <Text style={[{ color }, { fontSize: 12 }]}>ホーム</Text>
+          // ),
         }}
       />
       <Tabs.Screen
         name="log"
         options={{
-          title: 'Log',
+          title: '履歴',
           tabBarIcon: ({ color, size }) => <Icon source="finance" color={color} size={size} />,
-          tabBarLabel: ({ focused, color }) => <Text style={{ color }}>ログ</Text>,
+          // tabBarLabel: ({ focused, color }) => (
+          //   <Text style={[{ color }, { fontSize: 12 }]}>ログ</Text>
+          // ),
         }}
       />
     </Tabs>

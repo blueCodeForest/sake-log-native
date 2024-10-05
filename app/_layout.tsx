@@ -1,25 +1,22 @@
 import 'reflect-metadata';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {
-  DarkTheme as NavigationDarkTheme,
-  DefaultTheme as NavigationDefaultTheme,
-} from '@react-navigation/native';
-// import { createStackNavigator } from '@react-navigation/stack';
-import { Stack } from 'expo-router';
+import { Stack, useNavigationContainerRef } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-
-import { useColorScheme } from '@/components/useColorScheme';
-import Colors from '@/constants/Colors';
-
-import TabLayout from './(tabs)/_layout';
-import { RecoilRoot } from 'recoil';
-import { adaptNavigationTheme, PaperProvider, useTheme } from 'react-native-paper';
+import * as Sentry from '@sentry/react-native';
+import { RecoilRoot, useSetRecoilState } from 'recoil';
+import { PaperProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { addInitialData, initDatabase, resetDatabase, showDatabase } from '@/utils/repositories';
+import { db } from '@/db/drizzle';
+import { drinkingIdState } from '@/stores/states';
+import { initializeDrinkingIdReset } from '@/features';
+import { DatabaseProvider } from '@/db/provider';
+import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
+import { SQLiteDatabase } from 'expo-sqlite';
+import { isRunningInExpoGo } from 'expo';
 
 // const Stack = createStackNavigator();
 
@@ -36,11 +33,24 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+Sentry.init({
+  dsn: 'https://80ce1387e9ca7db9735c3b320e8aeec2@o4508027859894272.ingest.us.sentry.io/4508027964293120',
+  debug: true,
+  integrations: [
+    new Sentry.ReactNativeTracing({
+      routingInstrumentation,
+      enableNativeFramesTracking: !isRunningInExpoGo(),
+    }),
+  ],
+});
+
+function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
+  useDrizzleStudio(db as unknown as SQLiteDatabase);
 
   // SSRProvider警告メッセージを非表示にする
   useEffect(() => {
@@ -53,21 +63,12 @@ export default function RootLayout() {
     };
   }, []);
 
-  // DB初期化
+  const ref = useNavigationContainerRef();
   useEffect(() => {
-    const initializeDatabase = async () => {
-      try {
-        await initDatabase();
-        // await addInitialData();
-        // await resetDatabase();
-        // await showDatabase();
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    initializeDatabase();
-  }, []);
+    if (ref) {
+      routingInstrumentation.registerNavigationContainer(ref);
+    }
+  }, [ref]);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -84,21 +85,34 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <DatabaseProvider>
+      <RecoilRoot>
+        <RootLayoutNav />
+      </RecoilRoot>
+    </DatabaseProvider>
+  );
 }
 
 function RootLayoutNav() {
   const theme = useAppTheme();
 
+  const setDrinkingId = useSetRecoilState(drinkingIdState);
+
+  useEffect(() => {
+    initializeDrinkingIdReset(setDrinkingId);
+  }, [setDrinkingId]);
+
   return (
-    <RecoilRoot>
-      <PaperProvider theme={theme}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
-        </GestureHandlerRootView>
-      </PaperProvider>
-    </RecoilRoot>
+    <PaperProvider theme={theme}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        {/* <Stack screenOptions={{ headerStyle: { backgroundColor: theme.colors.background } }}> */}
+        <Stack screenOptions={{ headerStyle: { backgroundColor: '#0097a7' } }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      </GestureHandlerRootView>
+    </PaperProvider>
   );
 }
+
+export default Sentry.wrap(RootLayout);

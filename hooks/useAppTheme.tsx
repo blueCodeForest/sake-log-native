@@ -14,12 +14,12 @@ export function useAppTheme() {
     reactNavigationDark: NavigationDarkTheme,
   });
 
-  // const theme =
-  //   colorScheme === 'dark'
-  //     ? { ...DarkTheme, colors: Colors.dark }
-  //     : { ...LightTheme, colors: Colors.light };
+  const theme =
+    colorScheme === 'dark'
+      ? { ...DarkTheme, colors: Colors.dark }
+      : { ...LightTheme, colors: Colors.light };
 
-  const theme = { ...LightTheme, colors: Colors.light };
+  // const theme = { ...LightTheme, colors: Colors.light };
 
   return theme;
 }
