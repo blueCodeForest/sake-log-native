@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   Dialog,
-  FAB,
   HelperText,
   Icon,
   Text,
@@ -16,8 +15,10 @@ import { View } from 'react-native';
 export const StyledCard = withTheme(Card);
 export const StyledCardContent = withTheme(Card.Content);
 export const StyledText = withTheme(Text);
-export const StyledFAB = withTheme(FAB);
 export const StyledDialog = withTheme(Dialog);
+export const StyledDialogTitle = withTheme(Dialog.Title);
+export const StyledDialogContent = withTheme(Dialog.Content);
+export const StyledDialogActions = withTheme(Dialog.Actions);
 export const StyledButton = withTheme(Button);
 export const StyledHelperText = withTheme(HelperText);
 export const StyledTextInput = withTheme(TextInput);

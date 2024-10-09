@@ -5,7 +5,7 @@ import { DeleteDrinkComfirmDialog } from './DeleteDrinkComfirmDialog';
 import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { useAppTheme, useDrinkingLogsData, useFontScale } from '@/hooks';
 import { addDrinkingLog } from '@/features';
-import { toSystemDayEnd, toSystemDayStart } from '@/utils/systemDateUtils';
+import { toSystemDayEnd, toSystemDayStart } from '@/utils';
 import { dontShowAddDrinkingLogDialogState, drinkingIdState } from '@/stores/states';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {

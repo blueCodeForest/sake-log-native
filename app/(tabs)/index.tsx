@@ -1,10 +1,10 @@
 import { DrinkCard } from '@/components/DrinkCard';
 import { TotalAlcoholIntakeArea } from '@/components/TotalAlcoholIntakeArea';
-import { StyleSheet, SafeAreaView, FlatList, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { DrinkBottomSheet } from '@/components/DrinkBottomSheet';
 import { useSharedValue } from 'react-native-reanimated';
 import { useState } from 'react';
-import { screenDimentions } from '@/constants/dimentions';
+import { MAX_CONTAINER_WIDTH, screenDimentions } from '@/constants/dimentions';
 import { useAppTheme, useInitializeDrinks, useSyncOrderedDrinks } from '@/hooks';
 import { Drink } from '@/domains/drink';
 import { StyledView } from '@/components/styled';
@@ -12,7 +12,6 @@ import { AddDrinkCard } from '@/components/AddDrinkCard';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { orderedDrinksState } from '@/stores/states';
 import { useRecoilState } from 'recoil';
-import { useEffect } from 'react';
 
 export default function TabOneScreen() {
   const theme = useAppTheme();
@@ -26,12 +25,7 @@ export default function TabOneScreen() {
     isOpen.value = !isOpen.value;
   };
 
-  useEffect(() => {
-    console.log('Current orderedDrinksState:', orderedDrinks);
-  }, [orderedDrinks]);
-
   const handleDragEnd = ({ data }: { data: Drink[] }) => {
-    console.log('Drag ended, data:', data);
     try {
       setOrderedDrinks(data);
     } catch (error) {
@@ -84,7 +78,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     // alignItems: 'stretch',
     width: screenDimentions.width * 0.95,
-    maxWidth: 600,
+    maxWidth: MAX_CONTAINER_WIDTH,
     marginTop: 10,
   },
   list: {},

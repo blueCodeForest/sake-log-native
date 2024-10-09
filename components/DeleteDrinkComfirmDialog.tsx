@@ -1,7 +1,14 @@
-import { Button, Dialog, Portal, Text } from 'react-native-paper';
+import { Button, Portal } from 'react-native-paper';
 import { Drink } from '@/domains/drink';
 import { softDeleteDrink } from '@/features';
-import { StyledButton, StyledText } from './styled';
+import {
+  StyledButton,
+  StyledDialog,
+  StyledDialogActions,
+  StyledDialogContent,
+  StyledDialogTitle,
+  StyledText,
+} from './styled';
 
 type DeleteDrinkComfirmDialogProps = {
   visible: boolean;
@@ -11,14 +18,14 @@ type DeleteDrinkComfirmDialogProps = {
 export function DeleteDrinkComfirmDialog(props: DeleteDrinkComfirmDialogProps) {
   return (
     <Portal>
-      <Dialog visible={props.visible} onDismiss={props.onDismiss}>
-        <Dialog.Title>確認</Dialog.Title>
-        <Dialog.Content>
+      <StyledDialog visible={props.visible} onDismiss={props.onDismiss}>
+        <StyledDialogTitle>確認</StyledDialogTitle>
+        <StyledDialogContent>
           <StyledText>
             {props.drink.name}({props.drink.size.name})を削除してもよろしいですか？
           </StyledText>
-        </Dialog.Content>
-        <Dialog.Actions>
+        </StyledDialogContent>
+        <StyledDialogActions>
           <StyledButton
             onPress={async () => {
               await softDeleteDrink(props.drink.id);
@@ -28,8 +35,8 @@ export function DeleteDrinkComfirmDialog(props: DeleteDrinkComfirmDialogProps) {
             はい
           </StyledButton>
           <Button onPress={props.onDismiss}>いいえ</Button>
-        </Dialog.Actions>
-      </Dialog>
+        </StyledDialogActions>
+      </StyledDialog>
     </Portal>
   );
 }

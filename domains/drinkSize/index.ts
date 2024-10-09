@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { drinksTable } from '../drink';
+// import { drinksTable } from '../drink';
 
 export const drinkSizesTable = sqliteTable('drink_sizes', {
   id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
@@ -8,9 +8,12 @@ export const drinkSizesTable = sqliteTable('drink_sizes', {
   amount: integer('amount').notNull(),
 });
 
-export const drinkSizesRelations = relations(drinkSizesTable, ({ many }) => ({
-  drinks: many(drinksTable),
-}));
+export const drinkSizesRelations = relations(drinkSizesTable, ({ many }) => {
+  const { drinksTable } = require('../drink'); // 循環参照を避けるための遅延評価
+  return {
+    drinks: many(drinksTable),
+  };
+});
 
 export type DrinkSize = typeof drinkSizesTable.$inferSelect;
 export type InsertDrinkSize = typeof drinkSizesTable.$inferInsert;

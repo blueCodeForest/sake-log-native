@@ -1,6 +1,12 @@
-import { Button, Dialog, Portal, Text } from 'react-native-paper';
+import { Button, Portal, Text } from 'react-native-paper';
 import { DrinkingLog } from '@/domains/drinkingLog';
 import { useDeleteDrinkingLog } from '@/hooks';
+import {
+  StyledDialog,
+  StyledDialogActions,
+  StyledDialogContent,
+  StyledDialogTitle,
+} from './styled';
 
 type DeleteDrinkingLogComfirmDialogProps = {
   visible: boolean;
@@ -12,15 +18,15 @@ export function DeleteDrinkingLogComfirmDialog(props: DeleteDrinkingLogComfirmDi
   const { onDeleteDrinkingLog } = useDeleteDrinkingLog();
   return (
     <Portal>
-      <Dialog visible={props.visible} onDismiss={props.onDismiss}>
-        <Dialog.Title>確認</Dialog.Title>
-        <Dialog.Content>
+      <StyledDialog visible={props.visible} onDismiss={props.onDismiss}>
+        <StyledDialogTitle>確認</StyledDialogTitle>
+        <StyledDialogContent>
           <Text>
             {props.log.drink.name}({props.log.drink.size.name}){' '}
             {new Date(props.log.createdAt).toLocaleString()}のログを削除してもよろしいですか？
           </Text>
-        </Dialog.Content>
-        <Dialog.Actions>
+        </StyledDialogContent>
+        <StyledDialogActions>
           <Button
             onPress={async () => {
               console.log('onPress1');
@@ -32,8 +38,8 @@ export function DeleteDrinkingLogComfirmDialog(props: DeleteDrinkingLogComfirmDi
             はい
           </Button>
           <Button onPress={props.onDismiss}>いいえ</Button>
-        </Dialog.Actions>
-      </Dialog>
+        </StyledDialogActions>
+      </StyledDialog>
     </Portal>
   );
 }

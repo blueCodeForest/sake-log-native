@@ -3,7 +3,7 @@ import { drinkingIdState } from '@/stores/states';
 import { DrinkingLog } from '@/domains/drinkingLog';
 import { deleteDrinkingLog } from '@/features/deleteDrinkingLog';
 import { useDrinkingLogsData } from '@/hooks/useDrinkingLogsData';
-import { toSystemDayEnd, toSystemDayStart } from '@/utils/systemDateUtils';
+import { toSystemDayEnd, toSystemDayStart } from '@/utils';
 
 export const useDeleteDrinkingLog = () => {
   const [drinkingId, setDrinkingId] = useRecoilState(drinkingIdState);

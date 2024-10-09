@@ -1,12 +1,18 @@
 import { Drink } from '@/domains/drink';
 import { dontShowAddDrinkingLogDialogState, drinkingIdState } from '@/stores/states';
-import React, { useEffect } from 'react';
-import { Dialog, Portal, Checkbox } from 'react-native-paper';
+import React from 'react';
+import { Portal, Checkbox } from 'react-native-paper';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { StyledButton, StyledText, StyledView } from './styled';
+import {
+  StyledButton,
+  StyledDialog,
+  StyledDialogActions,
+  StyledDialogContent,
+  StyledDialogTitle,
+  StyledText,
+  StyledView,
+} from './styled';
 import { addDrinkingLog } from '@/features';
-import { useAppTheme } from '@/hooks';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface AddDrinkingLogConfirmDialogProps {
   drink: Drink;
@@ -31,9 +37,9 @@ export function AddDrinkingLogConfirmDialog(props: AddDrinkingLogConfirmDialogPr
 
   return (
     <Portal>
-      <Dialog visible={props.visible} onDismiss={props.onDissmiss}>
-        <Dialog.Title>確認</Dialog.Title>
-        <Dialog.Content>
+      <StyledDialog visible={props.visible} onDismiss={props.onDissmiss}>
+        <StyledDialogTitle>確認</StyledDialogTitle>
+        <StyledDialogContent>
           <StyledText>
             {props.drink.name}({props.drink.size.name})を飲みますか？
           </StyledText>
@@ -45,12 +51,12 @@ export function AddDrinkingLogConfirmDialog(props: AddDrinkingLogConfirmDialogPr
               onPress={() => setDontShowAgain(!dontShowAgain)}
             />
           </StyledView>
-        </Dialog.Content>
-        <Dialog.Actions>
+        </StyledDialogContent>
+        <StyledDialogActions>
           <StyledButton onPress={async () => await onConfirm()}>はい</StyledButton>
           <StyledButton onPress={onCancel}>いいえ</StyledButton>
-        </Dialog.Actions>
-      </Dialog>
+        </StyledDialogActions>
+      </StyledDialog>
     </Portal>
   );
 }

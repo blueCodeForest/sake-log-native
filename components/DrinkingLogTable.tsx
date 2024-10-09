@@ -22,8 +22,8 @@ export function DrinkingLogTable() {
     <>
       <DataTable>
         <DataTable.Header>
-          <DataTable.Title>Drink</DataTable.Title>
-          <DataTable.Title numeric>Created At</DataTable.Title>
+          <DataTable.Title>ドリンク</DataTable.Title>
+          <DataTable.Title numeric>日時</DataTable.Title>
         </DataTable.Header>
       </DataTable>
       <ScrollView>
@@ -42,7 +42,7 @@ export function DrinkingLogTable() {
         numberOfItemsPerPage={itemsPerPage}
         onItemsPerPageChange={onItemsPerPageChange}
         showFastPaginationControls
-        selectPageDropdownLabel={'Rows per page'}
+        selectPageDropdownLabel={'件数'}
       />
     </>
   );

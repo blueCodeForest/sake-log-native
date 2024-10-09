@@ -4,7 +4,7 @@ import { Drink } from '@/domains/drink';
 import { useEffect } from 'react';
 import { drinkingLogsTable } from '@/db/schema';
 import { desc, eq } from 'drizzle-orm';
-import { convertToIsoString } from '@/utils/systemDateUtils';
+import { convertToIsoString } from '@/utils';
 
 export function useDrinksData(): Drink[] {
   const { data } = useLiveQuery(

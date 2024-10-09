@@ -36,7 +36,7 @@ SplashScreen.preventAutoHideAsync();
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 Sentry.init({
   dsn: 'https://80ce1387e9ca7db9735c3b320e8aeec2@o4508027859894272.ingest.us.sentry.io/4508027964293120',
-  debug: true,
+  debug: process.env.NODE_ENV === 'development', // 本番環境ではfalseに
   integrations: [
     new Sentry.ReactNativeTracing({
       routingInstrumentation,
@@ -50,17 +50,22 @@ function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
-  useDrizzleStudio(db as unknown as SQLiteDatabase);
+
+  if (process.env.NODE_ENV === 'development') {
+    useDrizzleStudio(db as unknown as SQLiteDatabase);
+  }
 
   // SSRProvider警告メッセージを非表示にする
   useEffect(() => {
-    const consoleWarn = console.warn;
-    console.warn = function filterWarnings(msg) {
-      const suppressedWarnings = ['SSRProvider is not necessary'];
-      if (!suppressedWarnings.some((entry) => msg.includes(entry))) {
-        consoleWarn(msg);
-      }
-    };
+    if (process.env.NODE_ENV === 'development') {
+      const consoleWarn = console.warn;
+      console.warn = function filterWarnings(msg) {
+        const suppressedWarnings = ['SSRProvider is not necessary'];
+        if (!suppressedWarnings.some((entry) => msg.includes(entry))) {
+          consoleWarn(msg);
+        }
+      };
+    }
   }, []);
 
   const ref = useNavigationContainerRef();

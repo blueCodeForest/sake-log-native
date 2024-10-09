@@ -1,6 +1,6 @@
 import { useDrinkingLogsData } from '@/hooks';
 import { drinkingIdState } from '@/stores/states';
-import { toSystemDayEnd, toSystemDayStart } from '@/utils/systemDateUtils';
+import { toSystemDayEnd, toSystemDayStart } from '@/utils';
 import { useRecoilValue } from 'recoil';
 import { StyledCard, StyledCardContent, StyledText, StyledView } from './styled';
 import { useEffect, useState } from 'react';

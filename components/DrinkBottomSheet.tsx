@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { HelperText, Text, TextInput } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { SharedValue } from 'react-native-reanimated';
 import { Picker } from '@react-native-picker/picker';
 
@@ -9,7 +9,7 @@ import { useAppTheme, useDrinkSizesData } from '@/hooks';
 import { BottomSheet } from './BottomSheet';
 import { BottomSheetSpacer } from './BottomSheetSpacer';
 import { addDrink, updateDrink } from '@/features';
-import { StyledText } from './styled';
+import { StyledHelperText, StyledPicker, StyledText, StyledTextInput } from './styled';
 
 type DrinkBottomSheetProps = {
   isOpen: SharedValue<boolean>;
@@ -85,30 +85,32 @@ export function DrinkBottomSheet(props: DrinkBottomSheetProps) {
       </StyledText>
       {editedDrink && (
         <View style={styles.form}>
-          <TextInput
+          <StyledTextInput
             label="ドリンク名"
             value={editedDrink.name}
-            onChangeText={(text) => setEditedDrink({ ...editedDrink, name: text })}
+            onChangeText={(text: string) => setEditedDrink({ ...editedDrink, name: text })}
             onBlur={() => validateField('name')}
             error={errors.name}
           />
-          <HelperText type="error" visible={errors.name}>
+          <StyledHelperText type="error" visible={errors.name}>
             ドリンク名を入力してください
-          </HelperText>
-          <TextInput
+          </StyledHelperText>
+          <StyledTextInput
             label="アルコール度数 (%)"
             value={tempAlcoholDegree}
-            onChangeText={(text) => setTempAlcoholDegree(text)}
+            onChangeText={(text: string) => setTempAlcoholDegree(text)}
             onBlur={() => validateField('alcoholDegree')}
             error={errors.alcoholDegree}
             keyboardType="numeric"
           />
-          <HelperText type="error" visible={errors.alcoholDegree}>
+          <StyledHelperText type="error" visible={errors.alcoholDegree}>
             アルコール度数を入力してください
-          </HelperText>
-          <Picker
+          </StyledHelperText>
+          <StyledPicker
             selectedValue={editedDrink.sizeId}
-            onValueChange={(itemValue) => setEditedDrink({ ...editedDrink, sizeId: itemValue })}
+            onValueChange={(itemValue: number) =>
+              setEditedDrink({ ...editedDrink, sizeId: itemValue })
+            }
             // style={{ backgroundColor: 'gray', marginBottom: 30 }}
             style={{ marginBottom: 25 }}
             itemStyle={{ color: theme.colors.onSurface }}
@@ -120,11 +122,11 @@ export function DrinkBottomSheet(props: DrinkBottomSheetProps) {
                 value={size.id}
               />
             ))}
-          </Picker>
-          <TextInput
+          </StyledPicker>
+          <StyledTextInput
             label="メモ"
             value={editedDrink.memo ?? ''}
-            onChangeText={(text) => setEditedDrink({ ...editedDrink, memo: text })}
+            onChangeText={(text: string) => setEditedDrink({ ...editedDrink, memo: text })}
             multiline
             style={{ marginBottom: 20 }}
           />
