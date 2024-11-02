@@ -3,23 +3,30 @@ import { TotalAlcoholIntakeArea } from '@/components/TotalAlcoholIntakeArea';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { DrinkBottomSheet } from '@/components/DrinkBottomSheet';
 import { useSharedValue } from 'react-native-reanimated';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MAX_CONTAINER_WIDTH, screenDimentions } from '@/constants/dimentions';
-import { useAppTheme, useInitializeDrinks, useSyncOrderedDrinks } from '@/hooks';
+import { useAppTheme, useOrderedDrinks } from '@/hooks';
 import { Drink } from '@/domains/drink';
 import { StyledView } from '@/components/styled';
 import { AddDrinkCard } from '@/components/AddDrinkCard';
 import DraggableFlatList from 'react-native-draggable-flatlist';
-import { orderedDrinksState } from '@/stores/states';
-import { useRecoilState } from 'recoil';
+import { drinkingIdState, orderedDrinksState } from '@/stores/states';
+import { useSetRecoilState } from 'recoil';
+import { scheduleAt6AM } from '@/utils';
 
 export default function TabOneScreen() {
   const theme = useAppTheme();
-  useInitializeDrinks();
-  useSyncOrderedDrinks();
   const isOpen = useSharedValue(false);
   const [selectedDrink, setSelectedDrink] = useState<Drink | null | undefined>(undefined);
-  const [orderedDrinks, setOrderedDrinks] = useRecoilState(orderedDrinksState);
+  const orderedDrinks = useOrderedDrinks();
+  const setDrinkingId = useSetRecoilState(drinkingIdState);
+  const setOrderedDrinks = useSetRecoilState(orderedDrinksState);
+
+  useEffect(() => {
+    scheduleAt6AM(() => {
+      setDrinkingId(0);
+    });
+  }, []);
 
   const toggleSheet = () => {
     isOpen.value = !isOpen.value;
@@ -27,6 +34,7 @@ export default function TabOneScreen() {
 
   const handleDragEnd = ({ data }: { data: Drink[] }) => {
     try {
+      // setOrderedDrinkIds(data.map((d) => d.id));
       setOrderedDrinks(data);
     } catch (error) {
       console.error('Error in handleDragEnd:', error);

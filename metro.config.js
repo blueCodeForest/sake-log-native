@@ -9,11 +9,12 @@ const config = withSentryConfig({
   ...defaultConfig, // Sentryの設定を反映
   transformer: {
     ...defaultConfig.transformer,
-    // babelTransformerPath: require.resolve('babel-plugin-inline-import'), // 一旦コメントアウト
+    babelTransformerPath: require.resolve('react-native-svg-transformer'), // SVGファイルをトランスフォームするためのパスを指定
   },
   resolver: {
     ...defaultConfig.resolver,
-    sourceExts: [...defaultConfig.resolver.sourceExts, 'sql'], // SQL拡張子を追加
+    sourceExts: [...defaultConfig.resolver.sourceExts, 'sql', 'svg'], // SQL拡張子とSVG拡張子を追加
+    assetExts: defaultConfig.resolver.assetExts.filter((ext) => ext !== 'svg'),
   },
 });
 

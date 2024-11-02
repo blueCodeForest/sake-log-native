@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { useTheme, Text, Icon } from 'react-native-paper';
+import CustomIcon from '@/assets/icons';
 
 export default function TabLayout() {
   const theme = useTheme();
@@ -24,7 +25,8 @@ export default function TabLayout() {
         options={{
           title: '酒レコ',
           tabBarIcon: ({ color, size }) => (
-            <Icon source="glass-cocktail" color={color} size={size} />
+            // <Icon source="glass-cocktail" color={color} size={size} />
+            <CustomIcon name="main" size={size * 1.4} color={color} />
           ),
           // tabBarLabel: ({ focused, color }) => (
           //   <Text style={[{ color }, { fontSize: 12 }]}>ホーム</Text>

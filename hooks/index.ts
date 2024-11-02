@@ -5,5 +5,4 @@ export { useDrinkingLogsData } from './useDrinkingLogsData';
 export { useDrinkSizesData } from './useDrinkSizesData';
 export { useDeleteDrinkingLog } from './useDeleteDrinkingLog';
 export { useFontScale } from './useFontScale';
-export { useInitializeDrinks } from './useInitializeDrinks';
-export { useSyncOrderedDrinks } from './useSyncOrderedDrinks';
+export { useOrderedDrinks } from './useOrderedDrinks';

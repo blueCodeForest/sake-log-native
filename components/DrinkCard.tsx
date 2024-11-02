@@ -17,6 +17,7 @@ import {
   StyledView,
 } from './styled';
 import { AddDrinkingLogConfirmDialog } from './AddDrinkingLogComfirmDialog';
+import CustomIcon from '@/assets/icons';
 
 type DrinkCardProps = {
   drink: Drink;
@@ -110,25 +111,27 @@ export function DrinkCard(props: DrinkCardProps) {
                   <StyledText>{alcoholAmount}g</StyledText>
                 </StyledCardContent>
               </StyledView>
-              <StyledView className="flex-row items-center">
-                <StyledCardContent className="p-0">
-                  <StyledText>{count}杯</StyledText>
-                </StyledCardContent>
-                <StyledCardContent className="p-0">
-                  <StyledTouchableRipple
-                    className="p-3"
-                    onPress={async () => {
-                      if (dontShowAddDrinkingLogDialog) {
-                        await onAddDrinkingLog();
-                      } else {
-                        onShowAddDrinkingLogDialog();
-                      }
-                    }}
-                  >
-                    <StyledIcon source="glass-cocktail" size={20 * fontScale} />
-                  </StyledTouchableRipple>
-                </StyledCardContent>
-              </StyledView>
+              <StyledTouchableRipple
+                className="p-1"
+                onPress={async () => {
+                  if (dontShowAddDrinkingLogDialog) {
+                    await onAddDrinkingLog();
+                  } else {
+                    onShowAddDrinkingLogDialog();
+                  }
+                }}
+              >
+                <StyledView className="flex-row items-center">
+                  <StyledCardContent className="p-0 m-2">
+                    <StyledText>{count}杯</StyledText>
+                  </StyledCardContent>
+                  <StyledCardContent className="p-0 mb-1">
+                    {/* <StyledIcon source="glass-cocktail" size={20 * fontScale} /> */}
+                    <CustomIcon name="add" size={26 * fontScale} color={theme.colors.primary} />
+                    {/* <CustomIcon name="add" size={20 * fontScale} color="red" /> */}
+                  </StyledCardContent>
+                </StyledView>
+              </StyledTouchableRipple>
             </StyledView>
           </StyledCard>
         </Swipeable>

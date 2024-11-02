@@ -6,13 +6,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import * as Sentry from '@sentry/react-native';
-import { RecoilRoot, useSetRecoilState } from 'recoil';
+import { RecoilRoot } from 'recoil';
 import { PaperProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { db } from '@/db/drizzle';
-import { drinkingIdState } from '@/stores/states';
-import { initializeDrinkingIdReset } from '@/features';
 import { DatabaseProvider } from '@/db/provider';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { SQLiteDatabase } from 'expo-sqlite';
@@ -101,12 +99,6 @@ function RootLayout() {
 
 function RootLayoutNav() {
   const theme = useAppTheme();
-
-  const setDrinkingId = useSetRecoilState(drinkingIdState);
-
-  useEffect(() => {
-    initializeDrinkingIdReset(setDrinkingId);
-  }, [setDrinkingId]);
 
   return (
     <PaperProvider theme={theme}>

@@ -6,12 +6,14 @@ interface UseDrinkingLogsDataParams {
   start?: string;
   end?: string;
   drinkId?: number;
+  refreshKey?: number;
 }
 
 export function useDrinkingLogsData({
   start,
   end,
   drinkId,
+  refreshKey,
 }: UseDrinkingLogsDataParams): DrinkingLog[] {
   const { data } = useLiveQuery(
     db.query.drinkingLogsTable.findMany({
@@ -36,7 +38,8 @@ export function useDrinkingLogsData({
         },
       },
       orderBy: (drinkingLogsTable, { desc }) => [desc(drinkingLogsTable.createdAt)],
-    })
+    }),
+    [refreshKey]
   );
   return data || [];
 }

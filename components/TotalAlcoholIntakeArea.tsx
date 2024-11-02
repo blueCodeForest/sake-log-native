@@ -1,6 +1,6 @@
 import { useDrinkingLogsData } from '@/hooks';
 import { drinkingIdState } from '@/stores/states';
-import { toSystemDayEnd, toSystemDayStart } from '@/utils';
+import { scheduleAt6AM, toSystemDayEnd, toSystemDayStart } from '@/utils';
 import { useRecoilValue } from 'recoil';
 import { StyledCard, StyledCardContent, StyledText, StyledView } from './styled';
 import { useEffect, useState } from 'react';
@@ -9,14 +9,26 @@ import { formatDistanceToNow } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
 export function TotalAlcoholIntakeArea() {
+  const [refreshKey, setRefreshKey] = useState(0);
   const drinkingLogs = useDrinkingLogsData({
     start: toSystemDayStart(new Date()),
     end: toSystemDayEnd(new Date()),
+    refreshKey,
   });
   const drinkingId = useRecoilValue(drinkingIdState);
 
   const [nowDrinkingLog, setNowDrinkingLog] = useState<DrinkingLog | null>(null);
   const [timeAgo, setTimeAgo] = useState<string>('');
+
+  const refreshDrinkingLogs = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    scheduleAt6AM(() => {
+      refreshDrinkingLogs();
+    });
+  }, []);
 
   useEffect(() => {
     setNowDrinkingLog(
@@ -50,7 +62,7 @@ export function TotalAlcoholIntakeArea() {
         <StyledView className="p-2">
           <StyledView className="p-2">
             <StyledCardContent className="items-center">
-              <StyledText variant="titleSmall">今日のアルコール摂取量</StyledText>
+              <StyledText variant="titleSmall">アルコール摂取量</StyledText>
             </StyledCardContent>
           </StyledView>
           <StyledView className="p-10">

@@ -1,9 +1,12 @@
 let isTimerSet = false;
-export const initializeDrinkingIdReset = (setDrinkingId: (value: number) => void) => {
-  if (isTimerSet) return; // 既にタイマーが設定されている場合は何もしない
+
+type ScheduledTask = () => void;
+
+export const scheduleAt6AM = (task: ScheduledTask) => {
+  if (isTimerSet) return;
   isTimerSet = true;
 
-  const resetDrinkingIdAt6AM = () => {
+  const scheduleTask = () => {
     const now = new Date();
     let millisTill6AM =
       new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0).getTime() -
@@ -13,12 +16,13 @@ export const initializeDrinkingIdReset = (setDrinkingId: (value: number) => void
     }
 
     setTimeout(() => {
-      setDrinkingId(0);
+      task(); // 初回実行
+
       setInterval(() => {
-        setDrinkingId(0);
-      }, 86400000); // 24時間ごとにリセット
+        task(); // 24時間ごとに実行
+      }, 86400000);
     }, millisTill6AM);
   };
 
-  resetDrinkingIdAt6AM();
+  scheduleTask();
 };
