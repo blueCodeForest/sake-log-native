@@ -128,7 +128,6 @@ export function DrinkCard(props: DrinkCardProps) {
                   <StyledCardContent className="p-0 mb-1">
                     {/* <StyledIcon source="glass-cocktail" size={20 * fontScale} /> */}
                     <CustomIcon name="add" size={26 * fontScale} color={theme.colors.primary} />
-                    {/* <CustomIcon name="add" size={20 * fontScale} color="red" /> */}
                   </StyledCardContent>
                 </StyledView>
               </StyledTouchableRipple>

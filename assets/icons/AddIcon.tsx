@@ -1,4 +1,3 @@
-// MyCustomIcon.js
 import React from 'react';
 import AddIconSvg from '../images/add_icon.svg';
 

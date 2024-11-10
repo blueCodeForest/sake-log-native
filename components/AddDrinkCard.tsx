@@ -28,6 +28,7 @@ export function AddDrinkCard(props: AddDrinkButtonProps) {
               <StyledText style={{ opacity: 0 }}>杯</StyledText>
             </StyledCardContent>
             <StyledCardContent className="p-0 mb-1">
+              {/* <StyledIcon source="glass-cocktail" size={20 * fontScale} color="transparent" /> */}
               <CustomIcon name="add" size={26 * fontScale} color="transparent" />
             </StyledCardContent>
           </StyledCardContent>

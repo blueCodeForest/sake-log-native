@@ -9,7 +9,6 @@ const config = withSentryConfig({
   ...defaultConfig, // Sentryの設定を反映
   transformer: {
     ...defaultConfig.transformer,
-    babelTransformerPath: require.resolve('react-native-svg-transformer'), // SVGファイルをトランスフォームするためのパスを指定
   },
   resolver: {
     ...defaultConfig.resolver,

@@ -15,8 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.shun-kimura.sake-rec",
-      "buildNumber": "12",
-      "deploymentTarget": "12.0"
+      "buildNumber": "17"
     },
     "android": {
       "adaptiveIcon": {
@@ -38,6 +37,14 @@
           "organization": "personal-4ai",
           "project": "sake-rec",
           "url": "https://sentry.io/"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "12.0"
+          }
         }
       ]
     ],
